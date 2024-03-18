@@ -2,11 +2,13 @@ const express = require("express");
 const router = express.Router();
 const GameModel = require("./Model/model");
 router.post("/add", async (req, res) => {
+  const dataArray = req.body;
   try {
-    const newGame = new GameModel(req.body);
-    await newGame.save(req.body);
+    const insertedGames = await GameModel.insertMany(dataArray);
 
-    res.json({ message: "Game data posted successfully", data: newGame });
+    res
+      .status(201)
+      .json({ message: "Games data posted successfully", data: insertedGames });
   } catch (error) {
     console.error("Error posting data:", error);
     res.status(500).json({ error: "Unable to post data" });
@@ -35,6 +37,28 @@ router.delete("/remove", async (req, res) => {
   } catch (error) {
     console.error("Error deleting game:", error);
     res.status(500).json({ error: "Unable to delete game" });
+  }
+});
+
+router.put("/update/:id", async (req, res) => {
+  const gameId = req.params.id;
+  const updatedGameData = req.body;
+
+  try {
+    const updatedGame = await GameModel.findByIdAndUpdate(
+      gameId,
+      updatedGameData,
+      { new: true }
+    );
+
+    if (!updatedGame) {
+      return res.status(404).json({ message: "Game not found" });
+    }
+
+    res.json({ message: "Game updated successfully", data: updatedGame });
+  } catch (error) {
+    console.error("Error updating game:", error);
+    res.status(500).json({ error: "Unable to update game" });
   }
 });
 
