@@ -6,7 +6,7 @@ const app = express();
 const routes = require('./routes');
 const port = 8001;
 
-app.use(express.json())
+// app.use(express.json())
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {

@@ -24,11 +24,11 @@ router.get("/data", async (req, res) => {
   }
 });
 
-router.delete("/remove", async (req, res) => {
+router.delete("/remove/:id", async (req, res) => {
   const gameId = req.params.id;
 
   try {
-    const deletedGame = await GameModel.deleteMany(gameId);
+    const deletedGame = await GameModel.findByIdAndDelete(gameId);
 
     if (!deletedGame) {
       return res.status(404).json({ message: "Game not found" });
